@@ -1,4 +1,4 @@
-# Nodejs Express Mysql Sequelize Demo App
+# Node.js Express Mysql Sequelize Passport Demo App
 
 This is a demo node.js application illustrating various features used in everyday web development, with a fine touch of best practices.
 
@@ -9,8 +9,8 @@ Framework - nodejs (express, pm2) - Run with pm2 to manage uptime/restarts/long 
 Setup nodejs and mysql.
 
 ## Requirements
-* [NodeJs](https://nodejs.org) >= 8.x 
-* [Mysql](https://www.mysql.com/) >= 8.x
+* [NodeJs](https://nodejs.org) >= 16.x 
+* [Mysql](https://www.mysql.com/) >= 2.x
 
 **NOTE:** Do not forget to set the sendgrid  `APIKEY`. In `development` env, you can set the env variables into config/development.js for development and config/production.js for production mode.
 Connect to mysql and create mysl db `node-demo-app`.
@@ -20,7 +20,7 @@ Set mysql username, password and DB name into env, you can set mysql env variabl
 ## Install
 
 ```sh
-$ git clone https://github.com/neat-soft/node-express-mysql-sequelize.git
+$ git clone https://github.com/joker-owner/node-express-mysql-sequelize-passport.git
 $ npm install
 $ sudo npm install -g pm2
 $ sudo pm2 start pm2.json
@@ -37,7 +37,7 @@ $ sudo pm2 start pm2.json
 Please import `Node-Express-MySQL-DEMO.postman_collection.json ` into your post man
 There are 6 apis you can test 
 
-To view more detailed documentation regarding the API, check out the [API documentation](https://github.com/neat-soft/node-express-mysql-sequelize/wiki).
+To view more detailed documentation regarding the API, check out the [API documentation](https://github.com/joker-owner/node-express-mysql-sequelize-passport/wiki).
 
 ## DB migration with sequelize
 ```sh

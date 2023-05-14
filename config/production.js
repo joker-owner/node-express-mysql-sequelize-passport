@@ -1,27 +1,27 @@
 const config = {
-    app: {
-      port: 3000,
-      project: 'node-express-mysql-sequelize-demo-app',
-      url: 'http://localhost:3000/api',
-      secret: 'asdfasfasdfasdafsdf231243243234234234234234234234',
+  app: {
+    port: process.env.PORT || 3000,
+    project: 'caas',
+    url: 'http://localhost:3000/api',
+    secret: 'lP=.|gJrH/E[#h9T86Aq+1jw%shIeU',
+  },
+  db: {
+    host: 'localhost',
+    database: 'caas',
+    username: 'root',
+    password: '',
+    dialect: 'mysql',
+    port: 3306,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
     },
-    db: {
-      host: 'localhost',
-      database: 'node-demo-app',
-      username: '',
-      password: '',
-      dialect: 'mysql',
-      port: 3306,
-      pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-      },
-      logging: false
-    },
-    sendgrid: {
-      apiKey: ''
-    }
+    logging: false
+  },
+  sendgrid: {
+    apiKey: ''
   }
-  module.exports = config;
+}
+module.exports = config;

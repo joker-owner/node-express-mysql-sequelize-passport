@@ -39,10 +39,10 @@ module.exports = async function (req, res, next) {
     if (tokenValues[0] !== tokenType) { throw new Error('Invalid token type'); }
     // Decode token and inject user data in request
     const payload = await jwt.verify(tokenValues[1], secret);
-    const userQuery = { where: { id: payload.id } };
+    const userQuery = { where: { uuid: payload.uuid } };
     const user = await models.user.findOne(userQuery);
     if (!user) { throw new Error('No user found'); }
-    if (!user || user.id === '') {
+    if (!user || user.uuid === '') {
       return res.status(400).send({
         result: 'error',
         message: 'Not found user with your access token'

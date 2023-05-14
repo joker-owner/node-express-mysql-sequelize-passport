@@ -172,7 +172,7 @@ exports.resetPassword = (req, res) => {
 };
 
 exports.changePassword = (req, res) => {
-  if (!req.user || !req.user.id || req.user.id === '') {
+  if (!req.user || !req.user.uuid || req.user.uuid === '') {
     return res.status(400).json({ result: 'error', message: 'Invalid User. Please login again' });
   }
   const { newPassword } = req.body;
@@ -186,10 +186,10 @@ exports.changePassword = (req, res) => {
       message: passwordValidation.reason
     });
   }
-  
+
   return models.user.findOne({
     where: {
-      id: req.user.id
+      uuid: req.user.uuid
     }
   }).then((user) => {
     if (!user) return res.status(400).send({ result: 'error', message: 'not found user with your email' });
@@ -263,36 +263,36 @@ exports.refreshSession = async (req, res) => {
   try {
     const { secret } = config.app;
     const payload = await jwt.verify(refreshToken, secret);
-    const userQuery = { where: { id: payload.id } };
+    const userQuery = { where: { uuid: payload.uuid } };
     const user = await models.user.findOne(userQuery);
     if (!user) { throw new Error('Not found user with your refresh token'); }
-    if (!user || user.id === '') {
+    if (!user || user.uuid === '') {
       return res.status(400).send({
         result: 'error',
         message: 'Not found user with your refresh token'
       });
     }
-    const accessToken = jwt.sign({ id: payload.id, email: payload.email }, secret, {
+    const accessToken = jwt.sign({ uuid: payload.uuid, email: payload.email }, secret, {
       expiresIn: 60 * 30 // expires in 30 min
     });
-    const newRefreshToken = jwt.sign({ id: payload.id, email: payload.email }, secret, {
+    const newRefreshToken = jwt.sign({ uuid: payload.uuid, email: payload.email }, secret, {
       expiresIn: '30d' // expires in 30 days
     });
     user.update({
       access_token: accessToken,
       refresh_token: newRefreshToken
     })
-    .then(() => {
-      const userData = {
-        access_token: accessToken,
-        refresh_token: newRefreshToken
-      };
-      return res.status(200).json({ result: 'ok', data: userData });
-    })
-    .catch(err => {
-      console.log('Error while update access token for login', err);
-      return res.status(400).json({ result: 'ok', message: 'Error in login' });
-    });
+      .then(() => {
+        const userData = {
+          access_token: accessToken,
+          refresh_token: newRefreshToken
+        };
+        return res.status(200).json({ result: 'ok', data: userData });
+      })
+      .catch(err => {
+        console.log('Error while update access token for login', err);
+        return res.status(400).json({ result: 'ok', message: 'Error in login' });
+      });
   } catch (error) {
     console.log('Error in refresh token');
     return res.status(403).send({ result: 'error', message: reduceErrorMessage(error) });
@@ -309,8 +309,8 @@ exports.verificationEmail = async (req, res) => {
       message: emailValidation.reason
     });
   }
-  const user = await models.user.findOne({ attributes: ['id'], where: { email } });
-  if (!user || user.id === '') {
+  const user = await models.user.findOne({ attributes: ['uuid'], where: { email } });
+  if (!user || user.uuid === '') {
     return res.status(400).send({
       result: 'error',
       message: 'Not found user with your email'
@@ -318,33 +318,33 @@ exports.verificationEmail = async (req, res) => {
   }
   const emailConfirmationToken = randomString.generate(6);
   user.update({ emailConfirmationToken })
-  .then(async () => {
-    const link = `${config.app.project}://auth/confirm-email?token=${emailConfirmationToken}`;
-    const text = await EmailTemplateService.renderHtmlTemplate('register', { link, code: emailConfirmationToken, project: config.app.project });
+    .then(async () => {
+      const link = `${config.app.project}://auth/confirm-email?token=${emailConfirmationToken}`;
+      const text = await EmailTemplateService.renderHtmlTemplate('register', { link, code: emailConfirmationToken, project: config.app.project });
 
-    mailer.send(
-      {
-        to: email,
-        from: config.email.from.support,
-        subject: 'Please active your account',
-        html: text
-      }
-    ).then(() => {
-      console.log('Resent email verification code');
-      return res.json({ result: 'ok', data: 'We sent email verification link to your email.' });
-    }).catch(err => {
-      console.log('mail send error: ', err);
+      mailer.send(
+        {
+          to: email,
+          from: config.email.from.support,
+          subject: 'Please active your account',
+          html: text
+        }
+      ).then(() => {
+        console.log('Resent email verification code');
+        return res.json({ result: 'ok', data: 'We sent email verification link to your email.' });
+      }).catch(err => {
+        console.log('mail send error: ', err);
+        return res.status(400).send({
+          result: 'error',
+          message: 'Error in sending email verification code'
+        });
+      });
+    })
+    .catch(err => {
+      console.log('Error while update access token for login', err);
       return res.status(400).send({
         result: 'error',
-        message: 'Error in sending email verification code'
+        message: 'Error while update user'
       });
     });
-  })
-  .catch(err => {
-    console.log('Error while update access token for login', err);
-    return res.status(400).send({
-      result: 'error',
-      message: 'Error while update user'
-    });
-  });
 };

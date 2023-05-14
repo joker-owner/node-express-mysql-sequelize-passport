@@ -1,3 +1,4 @@
+require("dotenv");
 const app = require('express')();
 const passport = require('passport');
 const cors = require('cors');
@@ -11,8 +12,8 @@ const routeInitialize = require('./routes');
 const passportInitialize = require('./passport/passport');
 
 const sslOptions = {
-  key: fs.readFileSync('config/cert/pipdroid.key', 'utf8'),
-  cert: fs.readFileSync('config/cert/pipdroid.crt', 'utf8'),
+  key: fs.readFileSync('config/cert/your-cert.key', 'utf8'),
+  cert: fs.readFileSync('config/cert/your-cert.crt', 'utf8'),
 };
 let server; //eslint-disable-line
 let httpServer; //eslint-disable-line

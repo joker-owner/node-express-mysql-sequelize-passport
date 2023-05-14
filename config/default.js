@@ -1,7 +1,7 @@
 const config = {
   email: {
     from: {
-      support: "support@neat-soft.com"
+      support: "jackson.andrew2244@fiverscan.com"
     },
   },
   auth: {

@@ -1,4 +1,3 @@
-
 module.exports = function (app) {
   const models = require('../models'); // eslint-disable-line
   app.set('sequelize', models.sequelize);
@@ -10,4 +9,3 @@ module.exports = function (app) {
       app.logger.error('Sequelize sync failed: ', error.message);
     });
 };
-

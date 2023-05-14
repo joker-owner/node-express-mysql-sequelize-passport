@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const bcrypt = require('bcrypt-nodejs');
 const randomString = require('randomstring');
 const LocalStrategy = require('passport-local').Strategy;
@@ -10,14 +11,14 @@ const reduceUserData = require('../utils/reduceUserData');
 const reduceErrorMessage = require('../utils/reduceErrorMessage');
 module.exports = function (passport, User) {
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.uuid);
   });
-  passport.deserializeUser((id, done) => {
-    User.findById(id).then((user) => {
+  passport.deserializeUser((uuid, done) => {
+    User.findOne({ where: { uuid } }).then((user) => {
       if (user) {
-        done(null, user);
-      } else {
         done(user.errors, null);
+      } else {
+        done(null, user);
       }
     });
   });
@@ -34,7 +35,7 @@ module.exports = function (passport, User) {
     return User.findOne({
       where: {
         email: {
-          $eq: email
+          [Op.eq]: email
         }
       }
     }).then((user) => {
@@ -45,9 +46,9 @@ module.exports = function (passport, User) {
       }
       const userPassword = generateHash(password);
       const emailConfirmationToken = randomString.generate(6);
-      const id = uuidV4();
+      const uuid = uuidV4();
       const payload = {
-        id,
+        uuid,
         email
       };
       const appSecret = config.app.secret;
@@ -58,7 +59,7 @@ module.exports = function (passport, User) {
         expiresIn: '90d' // expires in 3 month
       });
       return User.create({
-        id,
+        uuid,
         email,
         access_token: accessToken,
         refresh_token: refreshToken,
@@ -87,12 +88,12 @@ module.exports = function (passport, User) {
         });
         return done(null, newUser);
       })
-      .catch(error => {
-        console.log(error);
-        return done(null, false, {
-          message: reduceErrorMessage(error)
+        .catch(error => {
+          console.log(error);
+          return done(null, false, {
+            message: reduceErrorMessage(error)
+          });
         });
-      });
     });
   }));
 
@@ -125,7 +126,7 @@ module.exports = function (passport, User) {
         });
       }
       const payload = {
-        id: user.get().id,
+        uuid: user.get().uuid,
         email: user.get().email
       };
       const appSecret = config.app.secret;
@@ -139,19 +140,19 @@ module.exports = function (passport, User) {
         accessToken,
         refreshToken
       })
-      .then(() => {
-        const userData = {
-          ...reduceUserData(user),
-          accessToken: accessToken
-        };
-        return done(null, userData);
-      })
-      .catch(err => {
-        console.log('Error while update access token for login', err);
-        return done(null, false, {
-          message: 'Something went wrong while login'
+        .then(() => {
+          const userData = {
+            ...reduceUserData(user),
+            accessToken: accessToken
+          };
+          return done(null, userData);
+        })
+        .catch(err => {
+          console.log('Error while update access token for login', err);
+          return done(null, false, {
+            message: 'Something went wrong while login'
+          });
         });
-      });
     }).catch((err) => {
       console.log('Error: ', err);
       return done(null, false, {

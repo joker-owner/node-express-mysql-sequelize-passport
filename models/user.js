@@ -1,13 +1,12 @@
-const util = require('util');
-const Sequelize = require('sequelize');
-module.exports = function (sequelize) {
+module.exports = function (sequelize, DataTypes) {
   const user = sequelize.define('user', {
     id: {
       primaryKey: true,
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
     },
+    uuid: DataTypes.UUID,
     email: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
@@ -15,31 +14,31 @@ module.exports = function (sequelize) {
       }
     },
     accessToken: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
     },
     refreshToken: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
     },
     password: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false
     },
     emailConfirmed: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       defaultValue: false
     },
     emailConfirmationToken: {
-      type: Sequelize.UUID,
-      defaultValue: Sequelize.UUIDV4
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
     },
     resetPasswordToken: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
     },
     resetPasswordTokenExpiration: {
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     isAdmin: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       defaultValue: false
     },
   }, {

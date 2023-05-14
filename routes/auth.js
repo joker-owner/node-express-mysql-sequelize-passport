@@ -50,7 +50,9 @@ router.post('/login', (req, res, next) => {
       return res.status(400).json({ result: 'error', message: info.message });
     }
     return req.logIn(user, (errLogin) => {
-      if (err) { return next(errLogin); }
+      if (errLogin) {
+        return res.status(400).json({ result: 'error', message: errLogin });
+      }
       return res.status(200).json({ result: 'ok', data: reduceUserData(user) });
     });
   })(req, res, next);

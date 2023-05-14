@@ -6,4 +6,3 @@ module.exports = function (errorDetails) {
   }
   return get(errorDetails, 'message', 'We have some technical difficulties. Please try again.');
 };
-

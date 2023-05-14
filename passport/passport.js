@@ -30,7 +30,7 @@ module.exports = function (passport, User) {
   }, (req, email, password, done) => {
     // other request fields handle
 
-    const generateHash = (pwd) => (bcrypt.hashSync(pwd, bcrypt.genSaltSync(8), null));
+    const generateHash = require("../utils/generateHash");
 
     return User.findOne({
       where: {

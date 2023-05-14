@@ -147,7 +147,7 @@ exports.resetPassword = (req, res) => {
       return res.status(400).send({ result: 'error', message: 'Reset password token is expired' });
     }
     // generate new pwd
-    const generateHash = (password) => (bcrypt.hashSync(password, bcrypt.genSaltSync(8), null));
+    const generateHash = require("../utils/generateHash");
     found.update({
       password: generateHash(newPassword)
     });
@@ -194,7 +194,7 @@ exports.changePassword = (req, res) => {
   }).then((user) => {
     if (!user) return res.status(400).send({ result: 'error', message: 'not found user with your email' });
     // generate new pwd
-    const generateHash = (password) => (bcrypt.hashSync(password, bcrypt.genSaltSync(8), null));
+    const generateHash = require("../utils/generateHash");
     user.update({
       password: generateHash(newPassword)
     });

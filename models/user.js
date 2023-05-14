@@ -5,6 +5,12 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
     },
     uuid: DataTypes.UUID,
+    firstName: {
+      type: DataTypes.STRING,
+    },
+    LastName: {
+      type: DataTypes.STRING,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,

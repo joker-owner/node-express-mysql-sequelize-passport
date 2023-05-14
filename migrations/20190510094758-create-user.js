@@ -12,6 +12,12 @@ module.exports = {
       defaultValue: Sequelize.UUIDV1,
       primaryKey: true,
     },
+    firstName: {
+      type: Sequelize.STRING,
+    },
+    LastName: {
+      type: Sequelize.STRING,
+    },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
